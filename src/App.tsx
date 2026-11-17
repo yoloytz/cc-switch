@@ -101,6 +101,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { OpenTerminalDialog } from "@/components/providers/OpenTerminalDialog";
 import { discardUnsavedChanges, hasUnsavedChanges } from "@/lib/unsavedChanges";
 import { RefreshAllQuotaButton } from "@/components/settings/auth/RefreshAllQuotaButton";
+import { AuthSectionVisibilityMenu } from "@/components/settings/auth/AuthSectionVisibilityMenu";
 import {
   checkToolUpdatesInBackground,
   useToolUpdatesAvailable,
@@ -1827,7 +1828,12 @@ function App() {
                   </Badge>
                 </>
               }
-              actions={<RefreshAllQuotaButton />}
+              actions={
+                <>
+                  <AuthSectionVisibilityMenu />
+                  <RefreshAllQuotaButton />
+                </>
+              }
             />
             <div
               id="main-content"
@@ -1895,6 +1901,7 @@ function App() {
           appConfigScrollTarget={appConfigScrollTarget}
           onImportSuccess={handleImportSuccess}
           onOpenApps={() => setCurrentView("apps")}
+          onOpenAuth={() => setCurrentView("auth")}
           onOpenApp={selectApp}
         />
       );

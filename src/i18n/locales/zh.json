@@ -446,6 +446,8 @@
       "sidebarAndHeader": "侧栏与页头",
       "visibleApps": "在侧栏显示哪些应用",
       "goToApps": "前往「应用」",
+      "visibleAuthSections": "授权中心显示哪些服务",
+      "goToAuth": "前往「授权中心」",
       "updates": "各应用的新版本",
       "checkToolUpdates": "启动时检查各应用的新版本",
       "checkToolUpdatesHelp": "打开后，每次启动 CC Switch 会查一次已安装的命令行应用有没有新版本，查到了就在侧栏「应用」上显示一个圆点。不会自动升级。",
@@ -5044,6 +5046,15 @@
   },
   "authCenter": {
     "helpTitle": "授权中心是什么",
+    "sections": {
+      "menu": "显示的服务",
+      "hiddenCount": "已隐藏 {{count}}",
+      "menuHint": "只影响这一页的显示，不会退出或删除账号。",
+      "showAll": "全部显示",
+      "confirmHideTitle": "隐藏 {{name}}？",
+      "confirmHideMessage": "{{name}} 里还有 {{count}} 个账号。隐藏后账号照常保留，用到它们的供应商不受影响；从供应商表单跳过来时会临时显示，也可以随时在「显示的服务」里勾回来。",
+      "confirmHide": "隐藏"
+    },
     "group": {
       "helpTitle": "{{service}} 账号怎么用",
       "copilotHelp": "用于 Claude Code、Claude Desktop 的 GitHub Copilot 预设。没指定账号的供应商用「默认」账号。",

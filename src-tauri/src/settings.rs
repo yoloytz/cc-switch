@@ -624,6 +624,10 @@ pub struct AppSettings {
     /// 应用页和侧栏的应用顺序（应用 ID）。缺的应用由前端按默认顺序插回，不认识的忽略
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub app_order: Option<Vec<String>>,
+    /// 授权中心里隐藏的分组（前端 `AuthCenterTarget` 的 ID）。缺省或空 = 全部显示；
+    /// 不认识的 ID 由前端忽略。只影响授权中心的显示，不退出、不删除账号
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hidden_auth_sections: Option<Vec<String>>,
 
     // ===== 设备级目录覆盖 =====
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -787,6 +791,7 @@ impl Default for AppSettings {
             quota_display: None,
             visible_apps: None,
             app_order: None,
+            hidden_auth_sections: None,
             claude_config_dir: None,
             codex_config_dir: None,
             gemini_config_dir: None,
@@ -1813,6 +1818,40 @@ mod tests {
         );
         let default = serde_json::to_value(AppSettings::default()).expect("serialize default");
         assert!(default.get("appOrder").is_none());
+    }
+
+    #[test]
+    fn hidden_auth_sections_default_to_all_shown_and_round_trip() {
+        // 老配置没有这个键：读出来是 None（授权中心全部显示），保存时也不写出来
+        let old_json = serde_json::json!({ "appOrder": ["claude"] });
+        let old: AppSettings = serde_json::from_value(old_json).expect("parse old settings");
+        assert_eq!(old.hidden_auth_sections, None);
+        let value = serde_json::to_value(&old).expect("serialize old settings");
+        assert!(value.get("hiddenAuthSections").is_none());
+
+        // 不认识的 ID（更新版本里的分组）原样保留，交给前端忽略
+        let settings: AppSettings = serde_json::from_value(serde_json::json!({
+            "hiddenAuthSections": ["github_copilot", "workbuddy_account", "future_section"]
+        }))
+        .expect("parse settings");
+        assert_eq!(
+            settings.hidden_auth_sections,
+            Some(vec![
+                "github_copilot".to_string(),
+                "workbuddy_account".to_string(),
+                "future_section".to_string(),
+            ])
+        );
+        let value = serde_json::to_value(&settings).expect("serialize settings");
+        assert_eq!(
+            value["hiddenAuthSections"],
+            serde_json::json!(["github_copilot", "workbuddy_account", "future_section"])
+        );
+
+        // 「全部显示」存成空列表，照样读写
+        let empty_json = serde_json::json!({ "hiddenAuthSections": [] });
+        let empty: AppSettings = serde_json::from_value(empty_json).expect("parse empty list");
+        assert_eq!(empty.hidden_auth_sections, Some(Vec::new()));
     }
 
     #[test]

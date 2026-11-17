@@ -33,12 +33,14 @@ interface GeneralSectionProps {
   settings: SettingsFormState;
   onAutoSave: (updates: Partial<SettingsFormState>) => Promise<boolean>;
   onOpenApps: () => void;
+  onOpenAuth: () => void;
 }
 
 export function GeneralSection({
   settings,
   onAutoSave,
   onOpenApps,
+  onOpenAuth,
 }: GeneralSectionProps) {
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
@@ -184,6 +186,15 @@ export function GeneralSection({
             control={
               <Button variant="quiet" size="compact" onClick={onOpenApps}>
                 {t("settings.general.goToApps")}
+                <ChevronRight className="h-3.5 w-3.5" />
+              </Button>
+            }
+          />
+          <SettingsRow
+            label={t("settings.general.visibleAuthSections")}
+            control={
+              <Button variant="quiet" size="compact" onClick={onOpenAuth}>
+                {t("settings.general.goToAuth")}
                 <ChevronRight className="h-3.5 w-3.5" />
               </Button>
             }

@@ -446,6 +446,8 @@
       "sidebarAndHeader": "사이드바 및 헤더",
       "visibleApps": "사이드바에 표시되는 앱",
       "goToApps": "‘앱’ 페이지 열기",
+      "visibleAuthSections": "인증 센터에 표시되는 서비스",
+      "goToAuth": "‘인증 센터’ 페이지 열기",
       "updates": "앱의 새 버전",
       "checkToolUpdates": "시작 시 앱의 새 버전 확인",
       "checkToolUpdatesHelp": "켜면 CC Switch가 시작할 때마다 설치된 명령줄 앱의 새 버전을 확인하며, 새 버전이 있으면 사이드바의 ‘앱’에 점을 표시합니다. 자동으로 업그레이드하지는 않습니다.",
@@ -5044,6 +5046,15 @@
   },
   "authCenter": {
     "helpTitle": "인증 센터란?",
+    "sections": {
+      "menu": "표시할 서비스",
+      "hiddenCount": "{{count}}개 숨김",
+      "menuHint": "이 페이지의 표시만 바뀝니다. 계정은 로그아웃되거나 삭제되지 않습니다.",
+      "showAll": "모두 표시",
+      "confirmHideTitle": "{{name}}을(를) 숨길까요?",
+      "confirmHideMessage": "{{name}}에 아직 계정이 {{count}}개 있습니다. 숨겨도 계정은 그대로 남고, 이 계정을 쓰는 공급자도 계속 작동합니다. 공급자 양식에서 이곳으로 이동하면 잠시 표시되며, ‘표시할 서비스’에서 언제든 다시 켤 수 있습니다.",
+      "confirmHide": "숨기기"
+    },
     "group": {
       "helpTitle": "{{service}} 계정의 사용 방식",
       "copilotHelp": "Claude Code와 Claude Desktop의 GitHub Copilot 프리셋에서 사용합니다. 계정을 선택하지 않은 공급자는 기본 계정을 사용합니다.",

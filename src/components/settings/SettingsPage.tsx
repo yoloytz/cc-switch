@@ -73,6 +73,8 @@ interface SettingsPageProps {
   onImportSuccess?: () => void | Promise<void>;
   /** 「在侧栏显示哪些应用」跳到「应用」页 */
   onOpenApps: () => void;
+  /** 「授权中心显示哪些服务」跳到「授权中心」页（开关在它页头的「显示的服务」里） */
+  onOpenAuth: () => void;
   /** 本地路由 →「正在使用路由的应用」的「前往」 */
   onOpenApp: (app: AppId) => void;
 }
@@ -86,6 +88,7 @@ export function SettingsPage({
   appConfigScrollTarget,
   onImportSuccess,
   onOpenApps,
+  onOpenAuth,
   onOpenApp,
 }: SettingsPageProps) {
   const { t } = useTranslation();
@@ -375,6 +378,7 @@ export function SettingsPage({
             settings={settings}
             onAutoSave={handleAutoSave}
             onOpenApps={onOpenApps}
+            onOpenAuth={onOpenAuth}
           />
         );
       case "appConfig":

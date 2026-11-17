@@ -446,6 +446,8 @@
       "sidebarAndHeader": "サイドバーとヘッダー",
       "visibleApps": "サイドバーに表示するアプリ",
       "goToApps": "「アプリ」を開く",
+      "visibleAuthSections": "「アカウント」に表示するサービス",
+      "goToAuth": "「アカウント」を開く",
       "updates": "各アプリの新しいバージョン",
       "checkToolUpdates": "起動時に各アプリの新しいバージョンを確認",
       "checkToolUpdatesHelp": "オンにすると、CC Switch の起動時にインストール済みのコマンドラインアプリの新しいバージョンを確認し、見つかればサイドバーの「アプリ」に点を表示します。自動でアップグレードはしません。",
@@ -5044,6 +5046,15 @@
   },
   "authCenter": {
     "helpTitle": "アカウントとは",
+    "sections": {
+      "menu": "表示するサービス",
+      "hiddenCount": "{{count}} 件非表示",
+      "menuHint": "このページの表示だけが変わります。アカウントはログアウトも削除もされません。",
+      "showAll": "すべて表示",
+      "confirmHideTitle": "{{name}} を非表示にしますか？",
+      "confirmHideMessage": "{{name}} にはまだ {{count}} 件のアカウントがあります。非表示にしてもアカウントは残り、それを使うプロバイダーもそのまま動作します。プロバイダーのフォームからここに移動したときは一時的に表示され、「表示するサービス」からいつでも再表示できます。",
+      "confirmHide": "非表示にする"
+    },
     "group": {
       "helpTitle": "{{service}} アカウントの使い方",
       "copilotHelp": "Claude Code、Claude Desktop の GitHub Copilot プリセットで使います。アカウントを指定していないプロバイダーは「デフォルト」のアカウントを使います。",

@@ -446,6 +446,8 @@
       "sidebarAndHeader": "Kenar çubuğu ve başlık",
       "visibleApps": "Kenar çubuğunda gösterilen uygulamalar",
       "goToApps": "Uygulamaları seç",
+      "visibleAuthSections": "Hesaplar'da gösterilen hizmetler",
+      "goToAuth": "Hesaplar'ı aç",
       "updates": "Uygulamalarınızın yeni sürümleri",
       "checkToolUpdates": "Açılışta uygulama güncellemelerini kontrol et",
       "checkToolUpdatesHelp": "CC Switch açıkken, her başlatıldığında yüklü komut satırı uygulamalarınızı yeni sürümler için kontrol eder ve bulursa kenar çubuğunda Uygulamalar üzerinde bir nokta gösterir. Hiçbir şey otomatik olarak yükseltilmez.",
@@ -4975,6 +4977,15 @@
   },
   "authCenter": {
     "helpTitle": "Hesaplar Nedir?",
+    "sections": {
+      "menu": "Gösterilen hizmetler",
+      "hiddenCount": "{{count}} gizli",
+      "menuHint": "Yalnızca bu sayfayı değiştirir. Hesapların oturumu kapanmaz ve silinmez.",
+      "showAll": "Tümünü göster",
+      "confirmHideTitle": "{{name}} gizlensin mi?",
+      "confirmHideMessage": "{{name}} içinde hâlâ {{count}} hesap var. Gizlemek hesapları silmez; onları kullanan sağlayıcılar çalışmaya devam eder. Bir sağlayıcı formundan buraya geldiğinizde geçici olarak görünür ve \"Gösterilen hizmetler\" menüsünden istediğiniz zaman yeniden açabilirsiniz.",
+      "confirmHide": "Gizle"
+    },
     "group": {
       "helpTitle": "{{service}} hesapları nasıl kullanılır?",
       "copilotHelp": "Claude Code ve Claude Desktop'deki GitHub Copilot ön ayarları tarafından kullanılır. Seçilmiş bir hesaba sahip olmayan sağlayıcılar Varsayılan hesabı kullanır.",

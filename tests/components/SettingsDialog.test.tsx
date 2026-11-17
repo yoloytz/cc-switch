@@ -162,6 +162,7 @@ const renderSettingsPage = (
   const allProps = {
     section: "general" as const,
     onOpenApps: vi.fn(),
+    onOpenAuth: vi.fn(),
     onOpenApp: vi.fn(),
     ...props,
   };
@@ -257,6 +258,12 @@ describe("SettingsPage", () => {
       screen.getByRole("button", { name: /settings\.general\.goToApps/ }),
     );
     expect(props.onOpenApps).toHaveBeenCalledTimes(1);
+
+    // 授权中心显示哪些服务：开关在授权中心页头，这里只带过去
+    fireEvent.click(
+      screen.getByRole("button", { name: /settings\.general\.goToAuth/ }),
+    );
+    expect(props.onOpenAuth).toHaveBeenCalledTimes(1);
   });
 
   it("rolls a failed autosave back and reports it", async () => {

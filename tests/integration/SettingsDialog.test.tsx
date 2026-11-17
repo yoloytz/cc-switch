@@ -87,6 +87,7 @@ const renderDialog = (
         <SettingsPage
           section="data"
           onOpenApps={() => {}}
+          onOpenAuth={() => {}}
           onOpenApp={() => {}}
           {...props}
         />

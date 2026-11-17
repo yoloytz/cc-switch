@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { createTestQueryClient } from "../utils/testQueryClient";
 import { CodexOAuthSection } from "@/components/providers/forms/CodexOAuthSection";
 import { AuthCenterPanel } from "@/components/settings/AuthCenterPanel";
 
@@ -135,7 +137,12 @@ describe("CodexOAuthSection", () => {
   });
 
   it("renders account quota in Auth Center", () => {
-    render(<AuthCenterPanel />);
+    // 授权中心按设置里的「显示的服务」挑分组，要有 QueryClient
+    render(
+      <QueryClientProvider client={createTestQueryClient()}>
+        <AuthCenterPanel />
+      </QueryClientProvider>,
+    );
 
     expect(mocks.renderAccountQuota).toHaveBeenCalledWith("account-1");
     expect(mocks.renderAccountQuota).toHaveBeenCalledWith("account-2");

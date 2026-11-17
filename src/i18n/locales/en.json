@@ -446,6 +446,8 @@
       "sidebarAndHeader": "Sidebar and header",
       "visibleApps": "Apps shown in the sidebar",
       "goToApps": "Open Apps",
+      "visibleAuthSections": "Services shown in Accounts",
+      "goToAuth": "Open Accounts",
       "updates": "New versions of your apps",
       "checkToolUpdates": "Check for new versions of your apps at launch",
       "checkToolUpdatesHelp": "When on, CC Switch checks your installed command-line apps for new versions each time it starts, and shows a dot on Apps in the sidebar if it finds one. Nothing is upgraded automatically.",
@@ -5044,6 +5046,15 @@
   },
   "authCenter": {
     "helpTitle": "What is Accounts?",
+    "sections": {
+      "menu": "Shown services",
+      "hiddenCount": "{{count}} hidden",
+      "menuHint": "Only changes this page. Accounts stay signed in and are not deleted.",
+      "showAll": "Show all",
+      "confirmHideTitle": "Hide {{name}}?",
+      "confirmHideMessage": "{{name}} still has {{count}} account(s). Hiding it keeps them, and providers that use them keep working. It shows up again when a provider form sends you here, and you can turn it back on under \"Shown services\" at any time.",
+      "confirmHide": "Hide"
+    },
     "group": {
       "helpTitle": "How {{service}} accounts are used",
       "copilotHelp": "Used by GitHub Copilot presets in Claude Code and Claude Desktop. Providers without a chosen account use the Default one.",

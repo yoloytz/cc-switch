@@ -10,6 +10,7 @@ import { parseFiniteNumber } from "@/components/usage/format";
 import type { UsageRangeSelection } from "@/types/usage";
 import type { AppMode } from "@/types/proxy";
 import { ROUTE_MODE_APP_IDS, appHas } from "@/config/appSpecs";
+import { managedStatusNeedsReauth } from "@/components/settings/auth/authSections";
 
 export interface AppNavStatus {
   mode: AppMode;
@@ -76,10 +77,9 @@ export function useSidebarStatus() {
   const todayRequests = todaySummary?.totalRequests ?? 0;
   const todayHitRate = todaySummary?.cacheHitRate ?? 0;
 
+  // 授权中心对隐藏的分组按同一口径「有账号要重新登录就照样显示」，提醒总能找到地方处理
   const authNeedsAttention = authStatuses.some((query) =>
-    query.data?.accounts.some(
-      (account) => account.requires_reauth || account.reauth_required === true,
-    ),
+    managedStatusNeedsReauth(query.data),
   );
 
   return {

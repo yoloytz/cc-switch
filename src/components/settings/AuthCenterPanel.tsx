@@ -1,5 +1,6 @@
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useMemo, useRef, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { useQueries } from "@tanstack/react-query";
 import { CopilotAuthSection } from "@/components/providers/forms/CopilotAuthSection";
 import { CodexOAuthSection } from "@/components/providers/forms/CodexOAuthSection";
 import { XaiOAuthSection } from "@/components/providers/forms/XaiOAuthSection";
@@ -8,10 +9,18 @@ import { ClaudeOfficialSection } from "@/components/providers/forms/ClaudeOffici
 import { KimiAccountLogin } from "@/components/providers/KimiAccountLogin";
 import { DshAccountLogin } from "@/components/providers/DshAccount";
 import { WorkBuddyAccountSection } from "@/components/settings/auth/WorkBuddyAccountSection";
-import { canSwitchAgyAccount } from "@/lib/authBinding";
+import {
+  AUTH_SECTION_IDS,
+  isManagedAuthSection,
+  managedAuthStatusKey,
+  managedStatusNeedsReauth,
+  useHiddenAuthSections,
+  visibleAuthSectionIds,
+} from "@/components/settings/auth/authSections";
 import { Switch } from "@/components/ui/switch";
 import { useAuthOpenBrowser, writeAuthOpenBrowser } from "@/lib/authLoginLink";
-import type { AuthCenterTarget } from "@/lib/api";
+import { authApi } from "@/lib/api";
+import type { AuthCenterTarget, ManagedAuthProvider } from "@/lib/api";
 
 interface AuthCenterPanelProps {
   authScrollTarget?: AuthCenterTarget | null;
@@ -56,6 +65,57 @@ function OpenBrowserToggle() {
   );
 }
 
+type HelpSide = "top" | "bottom";
+
+/**
+ * 各组怎么画。传进来的 `helpSide` 只在这一组是页面上最后一组时给（"top"，免得说明气泡
+ * 贴着页面底部被裁掉）；其余时候用各组原来的方向。
+ */
+const AUTH_SECTION_RENDERERS: Record<
+  AuthCenterTarget,
+  (helpSide?: HelpSide) => ReactNode
+> = {
+  claude_official: (side = "bottom") => (
+    <ClaudeOfficialSection helpSide={side} />
+  ),
+  github_copilot: (side) => <CopilotAuthSection helpSide={side} />,
+  codex_oauth: (side) => <CodexOAuthSection showAccountQuota helpSide={side} />,
+  xai_oauth: (side = "bottom") => (
+    <XaiOAuthSection mode="manage" helpSide={side} />
+  ),
+  kimi_oauth: (side = "bottom") => <KimiAccountLogin helpSide={side} />,
+  dsh_account: (side = "bottom") => <DshAccountLogin helpSide={side} />,
+  agy_oauth: (side = "bottom") => <AgyOAuthSection helpSide={side} />,
+  workbuddy_account: () => <WorkBuddyAccountSection helpSide="top" />,
+};
+
+/**
+ * 隐藏的托管账号组里有没有要重新登录的账号。只读已有缓存（侧栏一直在查 Copilot、ChatGPT、
+ * xAI 的状态），不为隐藏的分组发请求：隐藏就是不想再让它在后台查。
+ */
+function useHiddenSectionsNeedingAttention(
+  hidden: ReadonlySet<AuthCenterTarget>,
+): ReadonlySet<AuthCenterTarget> {
+  const providers = AUTH_SECTION_IDS.filter(
+    (id): id is ManagedAuthProvider =>
+      hidden.has(id) && isManagedAuthSection(id),
+  );
+  const statuses = useQueries({
+    queries: providers.map((provider) => ({
+      queryKey: managedAuthStatusKey(provider),
+      queryFn: () => authApi.authGetStatus(provider),
+      enabled: false,
+    })),
+  });
+  const key = providers
+    .filter((_, index) => managedStatusNeedsReauth(statuses[index]?.data))
+    .join(",");
+  return useMemo(
+    () => new Set(key ? (key.split(",") as AuthCenterTarget[]) : []),
+    [key],
+  );
+}
+
 /** 定位到某一组时，卡片上沿离正文顶部留的距离 */
 const SECTION_SCROLL_MARGIN = 16;
 
@@ -77,6 +137,9 @@ function findScrollContainer(element: HTMLElement): HTMLElement | null {
  * macOS、Windows 上另有 Antigravity 一组（切 agy 的官方登录：macOS 钥匙串、Windows 凭据管理器）。
  * WorkBuddy 收录桌面端登录的快照再切换（macOS 已确认路径，Windows / Linux 按推断路径）。
  * 侧栏的「授权中心」页和供应商表单里「管理账号」打开的全屏页共用。
+ *
+ * 用户可以在页头「显示的服务」里隐藏不用的分组（设置 `hiddenAuthSections`）。隐藏的分组不挂载，
+ * 也就不再查状态、不再轮询；账号和用到它们的供应商都不受影响。
  */
 export function AuthCenterPanel({
   authScrollTarget,
@@ -84,39 +147,22 @@ export function AuthCenterPanel({
 }: AuthCenterPanelProps) {
   const { t } = useTranslation();
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const claudeOfficialSectionRef = useRef<HTMLDivElement | null>(null);
-  const copilotSectionRef = useRef<HTMLDivElement | null>(null);
-  const codexOauthSectionRef = useRef<HTMLDivElement | null>(null);
-  const xaiOauthSectionRef = useRef<HTMLDivElement | null>(null);
-  const agyOauthSectionRef = useRef<HTMLDivElement | null>(null);
-  const kimiOauthSectionRef = useRef<HTMLDivElement | null>(null);
-  const workbuddySectionRef = useRef<HTMLDivElement | null>(null);
-  const dshAccountSectionRef = useRef<HTMLDivElement | null>(null);
-  const showAgy = canSwitchAgyAccount();
+  const sectionRefs = useRef(new Map<AuthCenterTarget, HTMLDivElement>());
+  const hidden = useHiddenAuthSections();
+  const needsAttention = useHiddenSectionsNeedingAttention(hidden);
+  const sections = visibleAuthSectionIds({
+    hidden,
+    scrollTarget: authScrollTarget,
+    needsAttention,
+  });
 
   useEffect(() => {
     if (!authScrollTarget) return;
     const root = rootRef.current;
     if (!root) return;
 
-    const sectionRef =
-      authScrollTarget === "kimi_oauth"
-        ? kimiOauthSectionRef
-        : authScrollTarget === "dsh_account"
-          ? dshAccountSectionRef
-          : authScrollTarget === "claude_official"
-            ? claudeOfficialSectionRef
-            : authScrollTarget === "github_copilot"
-              ? copilotSectionRef
-              : authScrollTarget === "codex_oauth"
-                ? codexOauthSectionRef
-                : authScrollTarget === "agy_oauth"
-                  ? agyOauthSectionRef
-                  : authScrollTarget === "workbuddy_account"
-                    ? workbuddySectionRef
-                    : xaiOauthSectionRef;
-
-    const target = sectionRef.current;
+    // 目标组这台机器上没有（比如 Linux 上的 Antigravity）时找不到，不滚动
+    const target = sectionRefs.current.get(authScrollTarget);
     const container = findScrollContainer(root);
     if (!target || !container) return;
 
@@ -195,32 +241,20 @@ export function AuthCenterPanel({
         </p>
       )}
       <OpenBrowserToggle />
-      <div ref={claudeOfficialSectionRef}>
-        <ClaudeOfficialSection helpSide="bottom" />
-      </div>
-      <div ref={copilotSectionRef}>
-        <CopilotAuthSection />
-      </div>
-      <div ref={codexOauthSectionRef}>
-        <CodexOAuthSection showAccountQuota />
-      </div>
-      <div ref={xaiOauthSectionRef}>
-        <XaiOAuthSection mode="manage" helpSide="bottom" />
-      </div>
-      <div ref={kimiOauthSectionRef}>
-        <KimiAccountLogin helpSide="bottom" />
-      </div>
-      <div ref={dshAccountSectionRef}>
-        <DshAccountLogin helpSide="bottom" />
-      </div>
-      {showAgy && (
-        <div ref={agyOauthSectionRef}>
-          <AgyOAuthSection helpSide="bottom" />
+      {sections.map((id, index) => (
+        <div
+          key={id}
+          data-auth-section={id}
+          ref={(element) => {
+            if (element) sectionRefs.current.set(id, element);
+            else sectionRefs.current.delete(id);
+          }}
+        >
+          {AUTH_SECTION_RENDERERS[id](
+            index === sections.length - 1 ? "top" : undefined,
+          )}
         </div>
-      )}
-      <div ref={workbuddySectionRef}>
-        <WorkBuddyAccountSection helpSide="top" />
-      </div>
+      ))}
     </div>
   );
 }

@@ -446,6 +446,8 @@
       "sidebarAndHeader": "Seitenleiste und Kopfzeile",
       "visibleApps": "In der Seitenleiste angezeigte Apps",
       "goToApps": "Apps öffnen",
+      "visibleAuthSections": "In „Konten“ angezeigte Dienste",
+      "goToAuth": "Konten öffnen",
       "updates": "Neue Versionen Ihrer Apps",
       "checkToolUpdates": "Beim Start nach neuen Versionen Ihrer Apps suchen",
       "checkToolUpdatesHelp": "Wenn aktiviert, prüft CC Switch bei jedem Start Ihre installierten Kommandozeilen-Apps auf neue Versionen und zeigt bei einem Fund einen Punkt bei „Apps“ in der Seitenleiste an. Es wird nichts automatisch aktualisiert.",
@@ -5044,6 +5046,15 @@
   },
   "authCenter": {
     "helpTitle": "Was ist „Konten“?",
+    "sections": {
+      "menu": "Angezeigte Dienste",
+      "hiddenCount": "{{count}} ausgeblendet",
+      "menuHint": "Ändert nur diese Seite. Konten bleiben angemeldet und werden nicht gelöscht.",
+      "showAll": "Alle anzeigen",
+      "confirmHideTitle": "{{name}} ausblenden?",
+      "confirmHideMessage": "{{name}} hat noch {{count}} Konto/Konten. Beim Ausblenden bleiben sie erhalten, und Anbieter, die sie verwenden, funktionieren weiter. Wenn Sie aus einem Anbieterformular hierher wechseln, wird der Dienst vorübergehend angezeigt; unter „Angezeigte Dienste“ können Sie ihn jederzeit wieder einblenden.",
+      "confirmHide": "Ausblenden"
+    },
     "group": {
       "helpTitle": "Wie {{service}}-Konten verwendet werden",
       "copilotHelp": "Wird von GitHub-Copilot-Vorlagen in Claude Code und Claude Desktop verwendet. Anbieter ohne ausgewähltes Konto verwenden das Standardkonto.",
